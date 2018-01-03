@@ -15,12 +15,28 @@
     <body>
         <ons-page on-infinite-scroll="spotslim.loadData">
             <ons-toolbar>
+                <div class="left">
+                    <ons-toolbar-button title="Previous" id="player-previous" disabled>
+                        <ons-icon icon="fa-step-backward"></ons-icon>
+                    </ons-toolbar-button>
+                    <ons-toolbar-button title="Next" id="player-next" disabled>
+                        <ons-icon icon="fa-step-forward"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
                 <div class="center">SpotSlim</div>
+                <div class="right">
+                    <ons-toolbar-button title="Play/pause" id="player-toggle" disabled>
+                        <ons-icon icon="fa-play" id="player-toggle-icon"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
             </ons-toolbar>
             <ons-list id="album-list">
             </ons-list>
             <ons-bottom-toolbar modifier="aligned">
-                <div class="center toolbar__center toolbar__title" id="player-title"></div>
+                <div class="center toolbar__center toolbar__title">
+                    <ons-progress-bar id="player-progress"></ons-progress-bar>
+                    <div id="player-title"></div>
+                </div>
             </ons-bottom-toolbar>
         </ons-page>
     </body>

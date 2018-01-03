@@ -12,6 +12,8 @@ var spotslim = (function () {
     var curTracks = [];
     var infinityScrollCallback;
     var albumList;
+    var player;
+    var playerBar = {};
 
     function getToken(callback) {
         var token = window.location.hash.substr(1).split('&')[0].split('=')[1];
@@ -69,11 +71,36 @@ var spotslim = (function () {
     }
 
     function updatePlayer(playbackState) {
-        document.getElementById('player-title').textContent = playbackState.track_window.current_track.name + ' - ' + playbackState.track_window.current_track.artists[0].name;
+        playerBar.title.textContent = playbackState.track_window.current_track.name + ' - ' + playbackState.track_window.current_track.artists[0].name;
+        playerBar.progress.value = (playbackState.position / playbackState.duration) * 100;
+        playerBar.previous.disabled = false;
+        playerBar.next.disabled = false;
+        playerBar.toggle.disabled = false;
+        if (playbackState.paused) {
+            playerBar.toggle.icon.setAttribute('icon', 'fa-play');
+        } else {
+            playerBar.toggle.icon.setAttribute('icon', 'fa-pause');
+        }
+    }
+
+    function resume() {
+        player.resume();
+    }
+
+    function nextTrack() {
+        player.nextTrack().then(resume);
+    }
+
+    function previousTrack() {
+        player.previousTrack().then(resume);
+    }
+
+    function togglePlay() {
+        player.togglePlay();
     }
 
     function initPlayer() {
-        var player = new Spotify.Player({
+        player = new Spotify.Player({
             name: 'SpotSlim',
             getOAuthToken: getToken
         });
@@ -82,10 +109,21 @@ var spotslim = (function () {
         player.on('player_state_changed', updatePlayer);
 
         player.connect();
+
+        playerBar.next.addEventListener('click', nextTrack, false);
+        playerBar.previous.addEventListener('click', previousTrack, false);
+        playerBar.toggle.addEventListener('click', togglePlay, false);
     }
 
     function init() {
         albumList = document.getElementById('album-list');
+        playerBar.title = document.getElementById('player-title');
+        playerBar.progress = document.getElementById('player-progress');
+        playerBar.next = document.getElementById('player-next');
+        playerBar.previous = document.getElementById('player-previous');
+        playerBar.toggle = document.getElementById('player-toggle');
+        playerBar.toggle.icon = document.getElementById('player-toggle-icon');
+
         window.onSpotifyWebPlaybackSDKReady = initPlayer;
     }
 
