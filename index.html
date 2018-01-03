@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>SpotSlim</title>
+        <meta name="description" content="Open source Spotify client" />
+        <link rel="stylesheet" href="node_modules/onsenui/css/onsenui-core.min.css" />
+        <link rel="stylesheet" href="node_modules/onsenui/css/onsen-css-components.min.css" />
+        <link rel="stylesheet" href="node_modules/onsenui/css/font_awesome/css/font-awesome.min.css" />
+        <script src="https://sdk.scdn.co/spotify-player.js" integrity="sha384-UwTbKCiTSLp/f7P8UvsGKHf9clUlNeedjf4CARYd8qDKW3eAV7ePeYn9Uag6Yf2b" crossorigin="anonymous"></script>
+        <script src="node_modules/spotify-web-api-js/src/spotify-web-api.js"></script>
+        <script src="node_modules/onsenui/js/onsenui.min.js"></script>
+        <script src="js/main.js"></script>
+    </head>
+    <body>
+        <ons-page>
+            <ons-toolbar>
+                <div class="center">SpotSlim</div>
+            </ons-toolbar>
+            <ons-list>
+                <ons-lazy-repeat id="infinite-list"></ons-lazy-repeat>
+            </ons-list>
+            <ons-bottom-toolbar modifier="aligned">
+                <div class="center toolbar__center toolbar__title" id="player-title"></div>
+            </ons-bottom-toolbar>
+        </ons-page>
+    </body>
+</html>
