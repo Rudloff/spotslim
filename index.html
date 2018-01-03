@@ -24,12 +24,16 @@
         <meta property="og:description" content="Open source Spotify client" />
     </head>
     <body>
-        <ons-page on-infinite-scroll="spotslim.loadData">
+        <ons-page>
             <ons-toolbar>
                 <div class="center">SpotSlim</div>
+                <div class="right">
+                    <ons-toolbar-button title="Search" id="search">
+                        <ons-icon icon="fa-search"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
             </ons-toolbar>
-            <ons-list id="album-list">
-            </ons-list>
+            <ons-navigator id="navigator"></ons-navigator>
             <ons-bottom-toolbar modifier="aligned">
                 <ons-progress-bar id="player-progress"></ons-progress-bar>
                 <div class="left toolbar__left">

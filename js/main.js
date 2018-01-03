@@ -9,11 +9,12 @@ var spotslim = (function () {
 
     var spotify = new SpotifyWebApi();
     var myDevice;
-    var curTracks = [];
+    var curAlbums = [];
     var infinityScrollCallback;
     var albumList;
     var player;
     var playerBar = {};
+    var pageNavigator;
 
     function askToken(redirect) {
         if (redirect) {
@@ -25,8 +26,9 @@ var spotslim = (function () {
         ons.notification.confirm({
             message: error.message,
             title: 'Error',
-            buttonLabels: ['Cancel', 'Retry']
-        }).then(askToken);
+            buttonLabels: ['Cancel', 'Retry'],
+            callback: askToken
+        });
     }
 
     function getToken(callback) {
@@ -57,14 +59,19 @@ var spotslim = (function () {
         );
     }
 
-    function addTrackItem(item, i, array) {
+    function getAlbumListItem(album) {
         var listItem = ons.createElement(
-            '<ons-list-item tappable data-uri="' + item.album.uri + '">' +
-                '<div class="left"><img class="list-item__thumbnail" src="' + item.album.images[0].url + '"></div>' +
-                '<div class="center"><span class="list-item__title">' + item.album.name + '</span><span class="list-item__subtitle">' + item.album.artists[0].name + '</div>' +
+            '<ons-list-item tappable data-uri="' + album.uri + '">' +
+                '<div class="left"><img class="list-item__thumbnail" src="' + album.images[0].url + '"></div>' +
+                '<div class="center"><span class="list-item__title">' + album.name + '</span><span class="list-item__subtitle">' + album.artists[0].name + '</div>' +
             '</ons-list-item>'
         );
         listItem.addEventListener('click', playTrack, false);
+        return listItem;
+    }
+
+    function addAlbumItem(item, i, array) {
+        var listItem = getAlbumListItem(item.album);
         albumList.appendChild(listItem);
         if (infinityScrollCallback && i === array.length - 1) {
             infinityScrollCallback();
@@ -72,22 +79,39 @@ var spotslim = (function () {
         }
     }
 
+    function addSearchResultItem(item) {
+        var listItem = getAlbumListItem(item);
+        document.getElementById('search-album-list').appendChild(listItem);
+    }
+
     function listAlbums(error, data) {
         if (!error) {
-            curTracks = curTracks.concat(data.items);
-            data.items.forEach(addTrackItem);
+            curAlbums = curAlbums.concat(data.items);
+            data.items.forEach(addAlbumItem);
+        }
+    }
+
+    function listSearchResults(error, data) {
+        document.getElementById('search-album-list').textContent = '';
+        if (!error) {
+            data.albums.items.forEach(addSearchResultItem);
         }
     }
 
     function loadMoreAlbums(callback) {
         infinityScrollCallback = callback;
-        spotify.getMySavedAlbums({offset: curTracks.length}, listAlbums);
+        spotify.getMySavedAlbums({offset: curAlbums.length}, listAlbums);
+    }
+
+    function initHomePage() {
+        albumList = document.getElementById('album-list');
+        spotify.getMySavedAlbums(null, listAlbums);
     }
 
     function initApi(device) {
         myDevice = device;
         spotify.setAccessToken(getToken());
-        spotify.getMySavedAlbums(null, listAlbums);
+        pageNavigator.replacePage('templates/home.html', {callback: initHomePage});
     }
 
     function updatePlayer(playbackState) {
@@ -138,14 +162,41 @@ var spotslim = (function () {
         playerBar.toggle.addEventListener('click', togglePlay, false);
     }
 
+
+    function search(page) {
+        spotify.searchAlbums(page.data.term, null, listSearchResults);
+    }
+
+    function loadSearchPage(term) {
+        if (term) {
+            if (pageNavigator.topPage.data.term) {
+                pageNavigator.topPage.data.term = term;
+                search(pageNavigator.topPage);
+            } else {
+                pageNavigator.bringPageTop('templates/search.html', {data: {term: term}, callback: search});
+            }
+        }
+    }
+
+    function getSearchTerm() {
+        ons.notification.prompt({
+            message: 'Album name',
+            title: 'Search',
+            cancelable: true,
+            callback: loadSearchPage
+        });
+    }
+
     function init() {
-        albumList = document.getElementById('album-list');
+        pageNavigator = document.getElementById('navigator');
         playerBar.title = document.getElementById('player-title');
         playerBar.progress = document.getElementById('player-progress');
         playerBar.next = document.getElementById('player-next');
         playerBar.previous = document.getElementById('player-previous');
         playerBar.toggle = document.getElementById('player-toggle');
         playerBar.toggle.icon = document.getElementById('player-toggle-icon');
+
+        document.getElementById('search').addEventListener('click', getSearchTerm, false);
 
         window.onSpotifyWebPlaybackSDKReady = initPlayer;
     }
