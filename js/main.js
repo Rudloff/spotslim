@@ -91,15 +91,17 @@ var spotslim = (function () {
     }
 
     function updatePlayer(playbackState) {
-        playerBar.title.textContent = playbackState.track_window.current_track.name + ' - ' + playbackState.track_window.current_track.artists[0].name;
-        playerBar.progress.value = (playbackState.position / playbackState.duration) * 100;
-        playerBar.previous.disabled = false;
-        playerBar.next.disabled = false;
-        playerBar.toggle.disabled = false;
-        if (playbackState.paused) {
-            playerBar.toggle.icon.setAttribute('icon', 'fa-play');
-        } else {
-            playerBar.toggle.icon.setAttribute('icon', 'fa-pause');
+        if (playbackState) {
+            playerBar.title.textContent = playbackState.track_window.current_track.name + ' - ' + playbackState.track_window.current_track.artists[0].name;
+            playerBar.progress.value = (playbackState.position / playbackState.duration) * 100;
+            playerBar.previous.disabled = false;
+            playerBar.next.disabled = false;
+            playerBar.toggle.disabled = false;
+            if (playbackState.paused) {
+                playerBar.toggle.icon.setAttribute('icon', 'fa-play');
+            } else {
+                playerBar.toggle.icon.setAttribute('icon', 'fa-pause');
+            }
         }
     }
 
