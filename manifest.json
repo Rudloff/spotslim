@@ -5,6 +5,11 @@
   "display": "standalone",
   "icons": [
     {
+      "src": "img/logo_512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
       "src": "img/logo.svg",
       "type": "image/svg+xml"
     }
