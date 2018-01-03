@@ -11,6 +11,7 @@ var spotslim = (function () {
     var myDevice;
     var curTracks = [];
     var infinityScrollCallback;
+    var albumList;
 
     function getToken(callback) {
         var token = window.location.hash.substr(1).split('&')[0].split('=')[1];
@@ -35,7 +36,7 @@ var spotslim = (function () {
     function addTrackItem(item, i, array) {
         var listItem = ons.createElement('<ons-list-item tappable data-uri="' + item.album.uri + '">' + item.album.name + '</ons-list-item>');
         listItem.addEventListener('click', playTrack, false);
-        document.getElementById('track-list').appendChild(listItem);
+        albumList.appendChild(listItem);
         if (infinityScrollCallback && i === array.length - 1) {
             infinityScrollCallback();
             infinityScrollCallback = null;
@@ -77,6 +78,7 @@ var spotslim = (function () {
     }
 
     function init() {
+        albumList = document.getElementById('album-list');
         window.onSpotifyWebPlaybackSDKReady = initPlayer;
     }
 
