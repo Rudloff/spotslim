@@ -7,6 +7,9 @@
 
 .bottom-bar .player-title {
     padding-left: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .bottom-bar .toolbar__right {
     width: 35%;
