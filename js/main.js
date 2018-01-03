@@ -34,7 +34,7 @@ var spotslim = (function () {
 
         var query = simpleQueryString.parse(window.location.search);
         if (query.error && query.error === 'access_denied') {
-            authError({ message: 'Spotify access denied.' });
+            authError({message: 'Spotify access denied.'});
             return;
         }
         if (token) {
