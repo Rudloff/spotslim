@@ -7,6 +7,7 @@ var spotslim = (function () {
         throw 'spotify-web-api-js is not loaded.';
     }
 
+    var appId = 'b7b9dd79c3fb44f2896a676b293e1e01';
     var spotify = new SpotifyWebApi();
     var myDevice;
     var curAlbums = [];
@@ -18,7 +19,7 @@ var spotslim = (function () {
 
     function askToken(redirect) {
         if (redirect) {
-            window.location = 'https://accounts.spotify.com/authorize/?client_id=b7b9dd79c3fb44f2896a676b293e1e01&redirect_uri=' + window.location.origin + window.location.pathname + '&response_type=token&scope=streaming%20user-read-birthdate%20user-read-email%20user-read-private%20user-library-read';
+            window.location = 'https://accounts.spotify.com/authorize/?client_id=' + appId + '&redirect_uri=' + window.location.origin + window.location.pathname + '&response_type=token&scope=streaming%20user-read-birthdate%20user-read-email%20user-read-private%20user-library-read';
         }
     }
 
