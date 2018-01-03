@@ -29,14 +29,19 @@ var spotslim = (function () {
     function playTrack(e) {
         spotify.play(
             {
-                context_uri: e.target.parentNode.dataset.uri,
+                context_uri: e.currentTarget.dataset.uri,
                 device_id: myDevice.device_id
             }
         );
     }
 
     function addTrackItem(item, i, array) {
-        var listItem = ons.createElement('<ons-list-item tappable data-uri="' + item.album.uri + '">' + item.album.name + '</ons-list-item>');
+        var listItem = ons.createElement(
+            '<ons-list-item tappable data-uri="' + item.album.uri + '">' +
+                '<div class="left"><img class="list-item__thumbnail" src="' + item.album.images[0].url + '"></div>' +
+                '<div class="center"><span class="list-item__title">' + item.album.name + '</span><span class="list-item__subtitle">' + item.album.artists[0].name + '</div>' +
+            '</ons-list-item>'
+        );
         listItem.addEventListener('click', playTrack, false);
         albumList.appendChild(listItem);
         if (infinityScrollCallback && i === array.length - 1) {
