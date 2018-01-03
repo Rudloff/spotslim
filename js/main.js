@@ -92,7 +92,7 @@ var spotslim = (function () {
 
     function updatePlayer(playbackState) {
         if (playbackState) {
-            playerBar.title.textContent = playbackState.track_window.current_track.name + ' - ' + playbackState.track_window.current_track.artists[0].name;
+            playerBar.title.innerHTML = playbackState.track_window.current_track.name + '<br/>' + playbackState.track_window.current_track.artists[0].name;
             playerBar.progress.value = (playbackState.position / playbackState.duration) * 100;
             playerBar.previous.disabled = false;
             playerBar.next.disabled = false;
