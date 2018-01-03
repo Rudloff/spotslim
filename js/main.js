@@ -1,5 +1,5 @@
 /*jslint browser: true*/
-/*global SpotifyWebApi, Spotify, window, ons*/
+/*global SpotifyWebApi, Spotify, window, ons, simpleQueryString*/
 
 var spotslim = (function () {
     'use strict';
@@ -15,15 +15,35 @@ var spotslim = (function () {
     var player;
     var playerBar = {};
 
+    function askToken(redirect) {
+        if (redirect) {
+            window.location = 'https://accounts.spotify.com/authorize/?client_id=b7b9dd79c3fb44f2896a676b293e1e01&redirect_uri=' + window.location.origin + window.location.pathname + '&response_type=token&scope=streaming%20user-read-birthdate%20user-read-email%20user-read-private%20user-library-read';
+        }
+    }
+
+    function authError(error) {
+        ons.notification.confirm({
+            message: error.message,
+            title: 'Error',
+            buttonLabels: ['Cancel', 'Retry']
+        }).then(askToken);
+    }
+
     function getToken(callback) {
-        var token = window.location.hash.substr(1).split('&')[0].split('=')[1];
+        var token = simpleQueryString.parse(window.location.hash).access_token;
+
+        var query = simpleQueryString.parse(window.location.search);
+        if (query.error && query.error === 'access_denied') {
+            authError({ message: 'Spotify access denied.' });
+            return;
+        }
         if (token) {
             if (callback) {
                 callback(token);
             }
             return token;
         }
-        window.location = 'https://accounts.spotify.com/authorize/?client_id=b7b9dd79c3fb44f2896a676b293e1e01&redirect_uri=' + window.location + '&response_type=token&scope=streaming%20user-read-birthdate%20user-read-email%20user-read-private%20user-library-read';
+        askToken(true);
 
         return undefined;
     }
@@ -107,6 +127,7 @@ var spotslim = (function () {
 
         player.on('ready', initApi);
         player.on('player_state_changed', updatePlayer);
+        player.on('authentication_error', authError);
 
         player.connect();
 

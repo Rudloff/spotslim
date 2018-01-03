@@ -510,7 +510,7 @@ once@^1.3.0:
   dependencies:
     wrappy "1"
 
-onsenui@^2.8.3:
+onsenui@~2.8.3:
   version "2.8.3"
   resolved "https://registry.yarnpkg.com/onsenui/-/onsenui-2.8.3.tgz#d22b05cbebe121e6ec7ce74bc40b7c56fd2dcaa6"
   dependencies:
@@ -623,6 +623,10 @@ rimraf@~2.2.8:
 signal-exit@^3.0.0:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"
+
+simple-query-string@~1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/simple-query-string/-/simple-query-string-1.3.2.tgz#3edc2c94280f7a878fa5a4de1898f8c9c0af39a7"
 
 spdx-correct@~1.0.0:
   version "1.0.2"
