@@ -13,12 +13,11 @@
         <script src="js/main.js"></script>
     </head>
     <body>
-        <ons-page>
+        <ons-page on-infinite-scroll="spotslim.loadData">
             <ons-toolbar>
                 <div class="center">SpotSlim</div>
             </ons-toolbar>
-            <ons-list>
-                <ons-lazy-repeat id="infinite-list"></ons-lazy-repeat>
+            <ons-list id="track-list">
             </ons-list>
             <ons-bottom-toolbar modifier="aligned">
                 <div class="center toolbar__center toolbar__title" id="player-title"></div>

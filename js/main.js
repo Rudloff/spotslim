@@ -9,7 +9,8 @@ var spotslim = (function () {
 
     var spotify = new SpotifyWebApi();
     var myDevice;
-    var curTracks;
+    var curTracks = [];
+    var infinityScrollCallback;
 
     function getToken(callback) {
         var token = window.location.hash.substr(1).split('&')[0].split('=')[1];
@@ -25,40 +26,38 @@ var spotslim = (function () {
     function playTrack(e) {
         spotify.play(
             {
-                uris: [e.target.parentNode.dataset.uri],
+                context_uri: e.target.parentNode.dataset.uri,
                 device_id: myDevice.device_id
             }
         );
     }
 
-    function countTracks() {
-        return curTracks.length;
-    }
-
-    function addTrackItem(i) {
-        var item = ons.createElement('<ons-list-item tappable data-uri="' + curTracks[i].track.uri + '">' + curTracks[i].track.name + '</ons-list-item>');
-        item.addEventListener('click', playTrack, false);
-        return item;
-    }
-
-    function listTracks(error, data) {
-        if (!error) {
-            curTracks = data.items;
-            var infiniteList = document.getElementById('infinite-list');
-
-            infiniteList.delegate = {
-                createItemContent: addTrackItem,
-                countItems: countTracks
-            };
-
-            infiniteList.refresh();
+    function addTrackItem(item, i, array) {
+        var listItem = ons.createElement('<ons-list-item tappable data-uri="' + item.album.uri + '">' + item.album.name + '</ons-list-item>');
+        listItem.addEventListener('click', playTrack, false);
+        document.getElementById('track-list').appendChild(listItem);
+        if (infinityScrollCallback && i === array.length - 1) {
+            infinityScrollCallback();
+            infinityScrollCallback = null;
         }
+    }
+
+    function listAlbums(error, data) {
+        if (!error) {
+            curTracks = curTracks.concat(data.items);
+            data.items.forEach(addTrackItem);
+        }
+    }
+
+    function loadMoreAlbums(callback) {
+        infinityScrollCallback = callback;
+        spotify.getMySavedAlbums({offset: curTracks.length}, listAlbums);
     }
 
     function initApi(device) {
         myDevice = device;
         spotify.setAccessToken(getToken());
-        spotify.getMySavedTracks(null, listTracks);
+        spotify.getMySavedAlbums(null, listAlbums);
     }
 
     function updatePlayer(playbackState) {
@@ -82,7 +81,8 @@ var spotslim = (function () {
     }
 
     return {
-        init: init
+        init: init,
+        loadData: loadMoreAlbums
     };
 }());
 
