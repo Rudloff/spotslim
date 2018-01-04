@@ -168,6 +168,7 @@ var spotslim = (function () {
         player.on('ready', initApi);
         player.on('player_state_changed', updatePlayer);
         player.on('authentication_error', authError);
+        player.on('account_error', authError);
         player.on('initialization_error', authError);
 
         player.connect();
