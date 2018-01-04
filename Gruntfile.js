@@ -23,6 +23,9 @@ module.exports = function (grunt) {
                 package: {
                     src: 'package.json'
                 }
+            },
+            webpack: {
+                build: require('./webpack.config.js')
             }
         }
     );
@@ -30,6 +33,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-jslint');
     grunt.loadNpmTasks('grunt-jsonlint');
     grunt.loadNpmTasks('grunt-fixpack');
+    grunt.loadNpmTasks('grunt-webpack');
 
     grunt.registerTask('lint', ['jslint', 'fixpack', 'jsonlint']);
+    grunt.registerTask('default', ['webpack']);
 };

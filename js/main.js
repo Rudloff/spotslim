@@ -1,5 +1,18 @@
-/*jslint browser: true*/
+/*jslint browser: true, node: true*/
 /*global SpotifyWebApi, Spotify, window, ons, simpleQueryString*/
+
+if (typeof window !== 'object') {
+    throw 'SpotSlim must be used in a browser.';
+}
+
+var SpotifyWebApi = require('spotify-web-api-js');
+var ons = require('onsenui');
+var simpleQueryString = require('simple-query-string');
+
+//CSS
+require('onsenui/css/onsenui-core.css');
+require('onsenui/css/onsen-css-components.css');
+require('onsenui/css/font_awesome/css/font-awesome.css');
 
 var spotslim = (function () {
     'use strict';
