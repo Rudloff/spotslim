@@ -1,0 +1,20 @@
+<ifmodule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType application/javascript "access plus 1 week"
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType image/png "access plus 1 week"
+    ExpiresByType image/jpeg "access plus 1 week"
+    ExpiresByType image/svg+xml "access plus 1 week"
+    ExpiresByType font/truetype "access plus 1 week"
+</ifmodule>
+
+<ifmodule mod_filter.c>
+    AddOutputFilterByType DEFLATE text/css text/html application/javascript font/truetype
+</ifmodule>
+
+<ifmodule mod_headers.c>
+    Header set X-Frame-Options "DENY"
+    Header set X-Content-Type-Options nosniff
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Content-Security-Policy "default-src 'self'; object-src 'none'; script-src 'self' sdk.scdn.co; style-src 'self' 'unsafe-inline'; child-src sdk.scdn.co; connect-src 'self' api.spotify.com; img-src 'self' i.scdn.co"
+</ifmodule>

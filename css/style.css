@@ -1,0 +1,21 @@
+.bottom-bar .toolbar__left {
+    white-space: normal;
+    line-height: 20px;
+    width: 100%;
+    padding-top: 2px;
+}
+
+.bottom-bar .player-title {
+    padding-left: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.bottom-bar .toolbar__right {
+    width: 35%;
+}
+
+.bottom-bar ons-progress-bar {
+    position: absolute;
+    width: 100%;
+}

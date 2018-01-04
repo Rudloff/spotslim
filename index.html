@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>SpotSlim</title>
+        <meta name="description" content="Open source Spotify client" />
+        <script src="https://sdk.scdn.co/spotify-player.js" integrity="sha384-UwTbKCiTSLp/f7P8UvsGKHf9clUlNeedjf4CARYd8qDKW3eAV7ePeYn9Uag6Yf2b" crossorigin="anonymous"></script>
+        <script src="dist/bundle.js"></script>
+        <link rel="manifest" href="manifest.json" />
+        <link rel="icon" href="img/logo.svg" />
+        <meta name="twitter:creator" content="@Tael67" />
+        <meta name="twitter:image" content="https://spotslim.netlib.re/img/logo_512.png" />
+        <meta property="og:title" content="SpotSlim" />
+        <meta property="og:url" content="https://spotslim.netlib.re/" />
+        <meta property="og:image" content="https://spotslim.netlib.re/img/logo_512.png" />
+        <meta property="og:type" content="website" />
+        <meta property="og:description" content="Open source Spotify client" />
+    </head>
+    <body>
+        <ons-page>
+            <ons-toolbar>
+                <div class="center">SpotSlim</div>
+                <div class="right">
+                    <ons-toolbar-button title="Search" id="search">
+                        <ons-icon icon="fa-search"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
+            </ons-toolbar>
+            <ons-navigator id="navigator"></ons-navigator>
+            <ons-bottom-toolbar modifier="aligned">
+                <ons-progress-bar id="player-progress"></ons-progress-bar>
+                <div class="left toolbar__left">
+                    <div id="player-title" class="player-title"></div>
+                </div>
+                <div class="center toolbar__center">
+                </div>
+                <div class="right toolbar__right">
+                    <ons-toolbar-button title="Previous" id="player-previous" disabled>
+                        <ons-icon icon="fa-step-backward"></ons-icon>
+                    </ons-toolbar-button>
+                    <ons-toolbar-button title="Play/pause" id="player-toggle" disabled>
+                        <ons-icon icon="fa-play" id="player-toggle-icon"></ons-icon>
+                    </ons-toolbar-button>
+                    <ons-toolbar-button title="Next" id="player-next" disabled>
+                        <ons-icon icon="fa-step-forward"></ons-icon>
+                    </ons-toolbar-button>
+                </div>
+            </ons-bottom-toolbar>
+        </ons-page>
+    </body>
+</html>
