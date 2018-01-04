@@ -5,9 +5,9 @@ if (typeof window !== 'object') {
     throw 'SpotSlim must be used in a browser.';
 }
 
-var SpotifyWebApi = require('spotify-web-api-js');
-var ons = require('onsenui');
-var simpleQueryString = require('simple-query-string');
+var SpotifyWebApi = require('spotify-web-api-js'),
+    ons = require('onsenui'),
+    simpleQueryString = require('simple-query-string');
 
 //CSS
 require('onsenui/css/onsenui-core.css');
@@ -20,15 +20,15 @@ var spotslim = (function () {
         throw 'spotify-web-api-js is not loaded.';
     }
 
-    var appId = 'b7b9dd79c3fb44f2896a676b293e1e01';
-    var spotify = new SpotifyWebApi();
-    var myDevice;
-    var curAlbums = [];
-    var infinityScrollCallback;
-    var albumList;
-    var player;
-    var playerBar = {};
-    var pageNavigator;
+    var appId = 'b7b9dd79c3fb44f2896a676b293e1e01',
+        spotify = new SpotifyWebApi(),
+        myDevice,
+        curAlbums = [],
+        infinityScrollCallback,
+        albumList,
+        player,
+        playerBar = {},
+        pageNavigator;
 
     function askToken(redirect) {
         if (redirect) {
@@ -46,9 +46,8 @@ var spotslim = (function () {
     }
 
     function getToken(callback) {
-        var token = simpleQueryString.parse(window.location.hash).access_token;
-
-        var query = simpleQueryString.parse(window.location.search);
+        var token = simpleQueryString.parse(window.location.hash).access_token,
+            query = simpleQueryString.parse(window.location.search);
         if (query.error && query.error === 'access_denied') {
             authError({message: 'Spotify access denied.'});
             return;
