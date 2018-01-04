@@ -117,7 +117,8 @@ var spotslim = (function () {
         spotify.getMySavedAlbums({offset: curAlbums.length}, listAlbums);
     }
 
-    function initHomePage() {
+    function initHomePage(page) {
+        page.onInfiniteScroll = loadMoreAlbums;
         albumList = document.getElementById('album-list');
         spotify.getMySavedAlbums(null, listAlbums);
     }
@@ -217,8 +218,7 @@ var spotslim = (function () {
     }
 
     return {
-        init: init,
-        loadData: loadMoreAlbums
+        init: init
     };
 }());
 
