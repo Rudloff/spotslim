@@ -71,6 +71,22 @@ var spotslim = (function () {
         return undefined;
     }
 
+    function resume() {
+        player.resume();
+    }
+
+    function nextTrack() {
+        player.nextTrack().then(resume);
+    }
+
+    function previousTrack() {
+        player.previousTrack().then(resume);
+    }
+
+    function togglePlay() {
+        player.togglePlay();
+    }
+
     function playTrack(e) {
         spotify.play(
             {
@@ -78,6 +94,11 @@ var spotslim = (function () {
                 device_id: myDevice.device_id
             }
         );
+        /**
+         * We need this hack because on Android Chrome playback has to be triggered by a click event
+         * @see https://github.com/spotify/web-playback-sdk/issues/5
+         */
+        setTimeout(resume, 1000);
     }
 
     function getAlbumListItem(album) {
@@ -149,22 +170,6 @@ var spotslim = (function () {
                 playerBar.toggle.icon.setAttribute('icon', 'fa-pause');
             }
         }
-    }
-
-    function resume() {
-        player.resume();
-    }
-
-    function nextTrack() {
-        player.nextTrack().then(resume);
-    }
-
-    function previousTrack() {
-        player.previousTrack().then(resume);
-    }
-
-    function togglePlay() {
-        player.togglePlay();
     }
 
     function initPlayer() {
