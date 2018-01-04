@@ -26,6 +26,16 @@ module.exports = function (grunt) {
             },
             webpack: {
                 build: require('./webpack.config.js')
+            },
+            watch: {
+                js: {
+                    files: ['js/*.js'],
+                    tasks: ['webpack']
+                },
+                css: {
+                    files: ['css/*.css'],
+                    tasks: ['webpack']
+                }
             }
         }
     );
@@ -34,6 +44,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-jsonlint');
     grunt.loadNpmTasks('grunt-fixpack');
     grunt.loadNpmTasks('grunt-webpack');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.registerTask('lint', ['jslint', 'fixpack', 'jsonlint']);
     grunt.registerTask('default', ['webpack']);
