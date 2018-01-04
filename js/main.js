@@ -63,7 +63,7 @@ var spotslim = (function () {
     function getAlbumListItem(album) {
         var listItem = ons.createElement(
             '<ons-list-item tappable data-uri="' + album.uri + '">' +
-                '<div class="left"><img class="list-item__thumbnail" src="' + album.images[0].url + '"></div>' +
+                '<div class="left"><img class="list-item__thumbnail" src="' + album.images[2].url + '"></div>' +
                 '<div class="center"><span class="list-item__title">' + album.name + '</span><span class="list-item__subtitle">' + album.artists[0].name + '</div>' +
             '</ons-list-item>'
         );
