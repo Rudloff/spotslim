@@ -1,6 +1,6 @@
 .bottom-bar .toolbar__left {
     white-space: normal;
-    line-height: normal;
+    line-height: 20px;
     width: 100%;
     padding-top: 2px;
 }
