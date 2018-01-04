@@ -165,6 +165,7 @@ var spotslim = (function () {
 
 
     function search(page) {
+        document.getElementById('search-term').textContent = page.data.term;
         spotify.searchAlbums(page.data.term, null, listSearchResults);
     }
 
