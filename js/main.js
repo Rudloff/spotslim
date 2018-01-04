@@ -45,6 +45,14 @@ var spotslim = (function () {
         });
     }
 
+    function playbackError(error) {
+        ons.notification.alert({
+            message: error.message,
+            title: 'Error',
+            cancelable: true
+        });
+    }
+
     function getToken(callback) {
         var token = simpleQueryString.parse(window.location.hash).access_token,
             query = simpleQueryString.parse(window.location.search);
@@ -170,6 +178,7 @@ var spotslim = (function () {
         player.on('authentication_error', authError);
         player.on('account_error', authError);
         player.on('initialization_error', authError);
+        player.on('playback_error', playbackError);
 
         player.connect();
 
