@@ -5,6 +5,14 @@ SpotSlim is an open source Spotify client written with web technologies.
 It uses the [Spotify Web API](https://developer.spotify.com/web-api/)
 and the [Web Playback SDK](https://beta.developer.spotify.com/documentation/web-playback-sdk/).
 
+## Setup
+
+You need to use [Yarn](https://yarnpkg.com/) to install the dependencies:
+
+```bash
+yarn
+```
+
 ## Requirements
 
 * The app must be served over HTTPS for Encrypted Media Extensions to work correctly.
