@@ -228,14 +228,15 @@ var spotslim = (function () {
         playerBar.toggle.icon = document.getElementById('player-toggle-icon');
 
         document.getElementById('search').addEventListener('click', getSearchTerm, false);
-
-        window.onSpotifyWebPlaybackSDKReady = initPlayer;
     }
 
     return {
-        init: init
+        init: init,
+        initPlayer: initPlayer
     };
 }());
+
+window.onSpotifyWebPlaybackSDKReady = spotslim.initPlayer;
 
 if (typeof ons === 'object') {
     ons.ready(spotslim.init);
