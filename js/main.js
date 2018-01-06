@@ -1,5 +1,5 @@
 /*jslint browser: true, node: true*/
-/*global SpotifyWebApi, Spotify, window, ons, simpleQueryString*/
+/*global SpotifyWebApi, Spotify, window, ons, simpleQueryString, cordova*/
 
 if (typeof window !== 'object') {
     throw 'SpotSlim must be used in a browser.';
@@ -28,11 +28,18 @@ var spotslim = (function () {
         albumList,
         player,
         playerBar = {},
-        pageNavigator;
+        pageNavigator,
+        token;
 
     function askToken(redirect) {
+        var redirectUri;
+        if (typeof cordova === 'object') {
+            redirectUri = 'spotslim://';
+        } else {
+            redirectUri = window.location.origin + window.location.pathname;
+        }
         if (redirect) {
-            window.location = 'https://accounts.spotify.com/authorize/?client_id=' + appId + '&redirect_uri=' + window.location.origin + window.location.pathname + '&response_type=token&scope=streaming%20user-read-birthdate%20user-read-email%20user-read-private%20user-library-read';
+            window.location = 'https://accounts.spotify.com/authorize/?client_id=' + appId + '&redirect_uri=' + redirectUri + '&response_type=token&scope=streaming%20user-read-birthdate%20user-read-email%20user-read-private%20user-library-read';
         }
     }
 
@@ -54,11 +61,13 @@ var spotslim = (function () {
     }
 
     function getToken(callback) {
-        var token = simpleQueryString.parse(window.location.hash).access_token,
-            query = simpleQueryString.parse(window.location.search);
+        var query = simpleQueryString.parse(window.location.search);
         if (query.error && query.error === 'access_denied') {
             authError({message: 'Spotify access denied.'});
             return;
+        }
+        if (!token) {
+            token = simpleQueryString.parse(window.location.hash).access_token;
         }
         if (token) {
             if (callback) {
@@ -186,10 +195,6 @@ var spotslim = (function () {
         player.on('playback_error', playbackError);
 
         player.connect();
-
-        playerBar.next.addEventListener('click', nextTrack, false);
-        playerBar.previous.addEventListener('click', previousTrack, false);
-        playerBar.toggle.addEventListener('click', togglePlay, false);
     }
 
 
@@ -227,12 +232,22 @@ var spotslim = (function () {
         playerBar.toggle = document.getElementById('player-toggle');
         playerBar.toggle.icon = document.getElementById('player-toggle-icon');
 
+        playerBar.next.addEventListener('click', nextTrack, false);
+        playerBar.previous.addEventListener('click', previousTrack, false);
+        playerBar.toggle.addEventListener('click', togglePlay, false);
+
         document.getElementById('search').addEventListener('click', getSearchTerm, false);
+    }
+
+    function customSchemeHandler(url) {
+        token = simpleQueryString.parse(url.replace('spotslim://#', '')).access_token;
+        initPlayer();
     }
 
     return {
         init: init,
-        initPlayer: initPlayer
+        initPlayer: initPlayer,
+        customSchemeHandler: customSchemeHandler
     };
 }());
 
@@ -243,3 +258,5 @@ if (typeof ons === 'object') {
 } else {
     throw 'Onsen is not loaded';
 }
+
+window.handleOpenURL = spotslim.customSchemeHandler;
