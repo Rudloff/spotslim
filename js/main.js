@@ -1,5 +1,5 @@
 /*jslint browser: true, node: true*/
-/*global SpotifyWebApi, Spotify, window, ons, simpleQueryString, cordova*/
+/*global SpotifyWebApi, Spotify, window, ons, simpleQueryString, cordova, MusicControls*/
 
 if (typeof window !== 'object') {
     throw 'SpotSlim must be used in a browser.';
@@ -166,17 +166,47 @@ var spotslim = (function () {
         pageNavigator.replacePage('templates/home.html', {callback: initHomePage});
     }
 
+    function musicControlsEvents(action) {
+        switch (JSON.parse(action).message) {
+        case 'music-controls-next':
+            nextTrack();
+            break;
+        case 'music-controls-previous':
+            previousTrack();
+            break;
+        case 'music-controls-play':
+        case 'music-controls-pause':
+        case 'music-controls-media-button-headset-hook':
+            togglePlay();
+            break;
+        }
+    }
+
     function updatePlayer(playbackState) {
         if (playbackState) {
+            var isPlaying;
             playerBar.title.innerHTML = playbackState.track_window.current_track.name + '<br/>' + playbackState.track_window.current_track.artists[0].name;
             playerBar.progress.value = (playbackState.position / playbackState.duration) * 100;
             playerBar.previous.disabled = false;
             playerBar.next.disabled = false;
             playerBar.toggle.disabled = false;
             if (playbackState.paused) {
+                isPlaying = false;
                 playerBar.toggle.icon.setAttribute('icon', 'fa-play');
             } else {
+                isPlaying = true;
                 playerBar.toggle.icon.setAttribute('icon', 'fa-pause');
+            }
+
+            if (typeof MusicControls === 'object') {
+                MusicControls.create({
+                    track: playbackState.track_window.current_track.name,
+                    artist: playbackState.track_window.current_track.artists[0].name,
+                    cover: playbackState.track_window.current_track.album.images[0].url,
+                    isPlaying: isPlaying
+                });
+                MusicControls.subscribe(musicControlsEvents);
+                MusicControls.listen();
             }
         }
     }
