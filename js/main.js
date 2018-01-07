@@ -178,6 +178,9 @@ var spotslim = (function () {
         case 'music-controls-media-button-headset-hook':
             togglePlay();
             break;
+        case 'music-controls-destroy':
+            navigator.app.exitApp();
+            break;
         }
     }
 
@@ -202,7 +205,8 @@ var spotslim = (function () {
                     track: playbackState.track_window.current_track.name,
                     artist: playbackState.track_window.current_track.artists[0].name,
                     cover: playbackState.track_window.current_track.album.images[0].url,
-                    isPlaying: isPlaying
+                    isPlaying: isPlaying,
+                    hasClose: true
                 });
                 MusicControls.subscribe(musicControlsEvents);
                 MusicControls.listen();
