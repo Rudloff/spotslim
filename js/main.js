@@ -143,7 +143,6 @@ var spotslim = (function () {
     }
 
     function listSearchResults(error, data) {
-        document.getElementById('search-album-list').textContent = '';
         if (!error) {
             data.albums.items.forEach(addSearchResultItem);
         }
@@ -230,6 +229,7 @@ var spotslim = (function () {
 
     function search(page) {
         document.getElementById('search-term').textContent = page.data.term;
+        document.getElementById('search-album-list').textContent = '';
         spotify.searchAlbums(page.data.term, null, listSearchResults);
     }
 
