@@ -7,7 +7,8 @@ if (typeof window !== 'object') {
 
 var SpotifyWebApi = require('spotify-web-api-js'),
     ons = require('onsenui'),
-    simpleQueryString = require('simple-query-string');
+    simpleQueryString = require('simple-query-string'),
+    he = require('he');
 
 //CSS
 require('onsenui/css/onsenui-core.css');
@@ -114,7 +115,7 @@ var spotslim = (function () {
         var listItem = ons.createElement(
             '<ons-list-item tappable data-uri="' + album.uri + '">' +
                 '<div class="left"><img class="list-item__thumbnail" src="' + album.images[2].url + '"></div>' +
-                '<div class="center"><span class="list-item__title">' + album.name + '</span><span class="list-item__subtitle">' + album.artists[0].name + '</div>' +
+                '<div class="center"><span class="list-item__title">' + he.encode(album.name) + '</span><span class="list-item__subtitle">' + he.encode(album.artists[0].name) + '</div>' +
             '</ons-list-item>'
         );
         listItem.addEventListener('click', playTrack, false);
@@ -187,7 +188,7 @@ var spotslim = (function () {
     function updatePlayer(playbackState) {
         if (playbackState) {
             var isPlaying;
-            playerBar.title.innerHTML = playbackState.track_window.current_track.name + '<br/>' + playbackState.track_window.current_track.artists[0].name;
+            playerBar.title.innerHTML = he.encode(playbackState.track_window.current_track.name) + '<br/>' + he.encode(playbackState.track_window.current_track.artists[0].name);
             playerBar.progress.value = (playbackState.position / playbackState.duration) * 100;
             playerBar.previous.disabled = false;
             playerBar.next.disabled = false;
