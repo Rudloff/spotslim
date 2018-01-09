@@ -919,7 +919,7 @@ doxdox-plugin-markdown@~1.1.2:
   dependencies:
     handlebars "4.0.10"
 
-doxdox@^2.0.3:
+doxdox@~2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/doxdox/-/doxdox-2.0.3.tgz#59fdaac00645b92a1b5b1390d6f0294d3cf1d7c7"
   dependencies:
