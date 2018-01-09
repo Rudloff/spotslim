@@ -197,6 +197,8 @@ var spotslim = (function () {
         case 'music-controls-destroy':
             navigator.app.exitApp();
             break;
+        default:
+            break;
         }
     }
 
