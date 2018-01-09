@@ -61,6 +61,25 @@ var spotslim = (function () {
         });
     }
 
+    function findToken() {
+        var hash = simpleQueryString.parse(window.location.hash);
+        if (hash.access_token) {
+            token = hash.access_token;
+            localStorage.setItem(
+                'spotify_token',
+                JSON.stringify({
+                    token: hash.access_token,
+                    expires: new Date(Date.now() + (hash.expires_in * 1000))
+                })
+            );
+        } else {
+            var storageItem = JSON.parse(localStorage.getItem('spotify_token'));
+            if (storageItem.token && (new Date() < new Date(storageItem.expires))) {
+                token = storageItem.token;
+            }
+        }
+    }
+
     function getToken(callback) {
         var query = simpleQueryString.parse(window.location.search);
         if (query.error && query.error === 'access_denied') {
@@ -68,22 +87,7 @@ var spotslim = (function () {
             return;
         }
         if (!token) {
-            var hash = simpleQueryString.parse(window.location.hash);
-            if (hash.access_token) {
-                token = hash.access_token;
-                localStorage.setItem(
-                    'spotify_token',
-                    JSON.stringify({
-                        token: hash.access_token,
-                        expires: new Date(Date.now() + (hash.expires_in * 1000))
-                    })
-                );
-            } else {
-                var storageItem = JSON.parse(localStorage.getItem('spotify_token'));
-                if (storageItem.token && (new Date() < new Date(storageItem.expires))) {
-                    token = storageItem.token;
-                }
-            }
+            findToken();
         }
         if (token) {
             if (callback) {
