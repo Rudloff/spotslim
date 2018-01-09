@@ -177,7 +177,7 @@ var spotslim = (function () {
     /**
      * Get a list item containing info about an album.
      * @param  {Object} album Album object returned by the Spotify API
-     * @return {Element} <ons-list-item> element
+     * @return {Element} ons-list-item element
      */
     function getAlbumListItem(album) {
         var listItem = ons.createElement(
@@ -254,7 +254,7 @@ var spotslim = (function () {
 
     /**
      * Function called when the home page is ready.
-     * @param  {Element} page <ons-page> element
+     * @param  {Element} page ons-page element
      * @return {void}
      */
     function initHomePage(page) {
@@ -360,7 +360,7 @@ var spotslim = (function () {
 
     /**
      * Start a new search
-     * @param  {Element} page <ons-page> element
+     * @param  {Element} page ons-page element
      * @return {void}
      */
     function search(page) {
