@@ -32,18 +32,26 @@ var spotslim = (function () {
         pageNavigator,
         token;
 
-    function askToken(redirect) {
+    /**
+     * Redirect the user to a Spotify page that asks for a new token.
+     * @return {void}
+     */
+    function askToken() {
         var redirectUri;
         if (typeof cordova === 'object') {
             redirectUri = 'spotslim://';
         } else {
             redirectUri = window.location.origin + window.location.pathname;
         }
-        if (redirect) {
-            window.location = 'https://accounts.spotify.com/authorize/?client_id=' + appId + '&redirect_uri=' + redirectUri + '&response_type=token&scope=streaming%20user-read-birthdate%20user-read-email%20user-read-private%20user-library-read';
-        }
+        window.location = 'https://accounts.spotify.com/authorize/?client_id=' + appId + '&redirect_uri=' + redirectUri + '&response_type=token&scope=streaming%20user-read-birthdate%20user-read-email%20user-read-private%20user-library-read';
     }
 
+    /**
+     * Display an authentication error.
+     * @param  {Object} error         Error object
+     * @param  {string} error.message Error message
+     * @return {void}
+     */
     function authError(error) {
         ons.notification.confirm({
             message: error.message,
@@ -53,6 +61,12 @@ var spotslim = (function () {
         });
     }
 
+    /**
+     * Display a playback error.
+     * @param  {Object} error         Error object
+     * @param  {string} error.message Error message
+     * @return {void}
+     */
     function playbackError(error) {
         ons.notification.alert({
             message: error.message,
@@ -61,6 +75,10 @@ var spotslim = (function () {
         });
     }
 
+    /**
+     * Check if a token is available in the URL or in the local storage.
+     * @return {void}
+     */
     function findToken() {
         var hash = simpleQueryString.parse(window.location.hash);
         if (hash.access_token) {
@@ -80,6 +98,11 @@ var spotslim = (function () {
         }
     }
 
+    /**
+     * Get a Spotify API token.
+     * @param  {Function} callback Function to call when we have a token
+     * @return {(string|undefined)} Token (if found)
+     */
     function getToken(callback) {
         var query = simpleQueryString.parse(window.location.search);
         if (query.error && query.error === 'access_denied') {
@@ -95,27 +118,50 @@ var spotslim = (function () {
             }
             return token;
         }
-        askToken(true);
+        askToken();
 
         return undefined;
     }
 
+    /**
+     * Resume playback.
+     * @return {void}
+     */
     function resume() {
         player.resume();
     }
 
+    /**
+     * Go to the next track in the album.
+     * @return {void}
+     */
     function nextTrack() {
         player.nextTrack().then(resume);
     }
 
+    /**
+     * Go to the previous track in the album.
+     * @return {void}
+     */
     function previousTrack() {
         player.previousTrack().then(resume);
     }
 
+    /**
+     * Resume/pause playback.
+     * @return {void}
+     */
     function togglePlay() {
         player.togglePlay();
     }
 
+    /**
+     * Start a new track.
+     *
+     * @param  {MouseEvent} e Event that triggered the function
+     * @return {void}
+     * @see https://github.com/spotify/web-playback-sdk/issues/5
+     */
     function playTrack(e) {
         spotify.play(
             {
@@ -123,13 +169,16 @@ var spotslim = (function () {
                 device_id: myDevice.device_id
             }
         );
-        /**
-         * We need this hack because on Android Chrome playback has to be triggered by a click event
-         * @see https://github.com/spotify/web-playback-sdk/issues/5
-         */
+
+        //We need this hack because on Android Chrome playback has to be triggered by a click event.
         setTimeout(resume, 1000);
     }
 
+    /**
+     * Get a list item containing info about an album.
+     * @param  {Object} album Album object returned by the Spotify API
+     * @return {Element} <ons-list-item> element
+     */
     function getAlbumListItem(album) {
         var listItem = ons.createElement(
             '<ons-list-item tappable data-uri="' + album.uri + '">' +
@@ -141,6 +190,13 @@ var spotslim = (function () {
         return listItem;
     }
 
+    /**
+     * Add a list item to the album list.
+     * @param {Object} item  Spotify API object
+     * @param {number} i     Index of the item
+     * @param {Array}  array List of Spotify objects
+     * @returns {void}
+     */
     function addAlbumItem(item, i, array) {
         var listItem = getAlbumListItem(item.album);
         albumList.appendChild(listItem);
@@ -150,11 +206,22 @@ var spotslim = (function () {
         }
     }
 
+    /**
+     * Add a list item to the search results.
+     * @param {Object} item Spotify API object
+     */
     function addSearchResultItem(item) {
         var listItem = getAlbumListItem(item);
         document.getElementById('search-album-list').appendChild(listItem);
     }
 
+    /**
+     * List albums returned by the Spotify API.
+     * @param  {Object} error Error object
+     * @param  {Object} data  Data returned by the Spotify API
+     * @return {void}
+     * @see https://developer.spotify.com/web-api/check-users-saved-albums/
+     */
     function listAlbums(error, data) {
         if (!error) {
             curAlbums = curAlbums.concat(data.items);
@@ -162,29 +229,58 @@ var spotslim = (function () {
         }
     }
 
+    /**
+     * List search results returned by the Spotify API.
+     * @param  {Object} error Error object
+     * @param  {Object} data  Data returned by the Spotify API
+     * @return {void}
+     * @see https://developer.spotify.com/web-api/search-item/
+     */
     function listSearchResults(error, data) {
         if (!error) {
             data.albums.items.forEach(addSearchResultItem);
         }
     }
 
+    /**
+     * Load more albums.
+     * @param  {Function} callback Function to call when data is returned by the API
+     * @return {void}
+     */
     function loadMoreAlbums(callback) {
         infinityScrollCallback = callback;
         spotify.getMySavedAlbums({offset: curAlbums.length}, listAlbums);
     }
 
+    /**
+     * Function called when the home page is ready.
+     * @param  {Element} page <ons-page> element
+     * @return {void}
+     */
     function initHomePage(page) {
         page.onInfiniteScroll = loadMoreAlbums;
         albumList = document.getElementById('album-list');
         spotify.getMySavedAlbums(null, listAlbums);
     }
 
+    /**
+     * Function called when the playback SDK is ready so we can initialize the API.
+     * @param  {Object} device           Current Spotify device
+     * @param  {string} device.device_id Device ID
+     * @return {void}
+     */
     function initApi(device) {
         myDevice = device;
         spotify.setAccessToken(getToken());
         pageNavigator.replacePage('templates/home.html', {callback: initHomePage});
     }
 
+    /**
+     * Function called when an event is triggered by the music controls plugin.
+     * @param  {string} action JSON string containing info about the event
+     * @return {void}
+     * @see https://github.com/homerours/cordova-music-controls-plugin/blob/master/README.md
+     */
     function musicControlsEvents(action) {
         switch (JSON.parse(action).message) {
         case 'music-controls-next':
@@ -206,6 +302,12 @@ var spotslim = (function () {
         }
     }
 
+    /**
+     * Upate info about the current track played by the player.
+     * @param  {Object} playbackState Object returned by the playback SDK
+     * @return {void}
+     * @see https://beta.developer.spotify.com/documentation/web-playback-sdk/reference/#event-player-state-changed
+     */
     function updatePlayer(playbackState) {
         if (playbackState) {
             var isPlaying;
@@ -236,6 +338,10 @@ var spotslim = (function () {
         }
     }
 
+    /**
+     * Initialize the playback SDK.
+     * @return {void}
+     */
     function initPlayer() {
         player = new Spotify.Player({
             name: 'SpotSlim',
@@ -252,13 +358,22 @@ var spotslim = (function () {
         player.connect();
     }
 
-
+    /**
+     * Start a new search
+     * @param  {Element} page <ons-page> element
+     * @return {void}
+     */
     function search(page) {
         document.getElementById('search-term').textContent = page.data.term;
         document.getElementById('search-album-list').textContent = '';
         spotify.searchAlbums(page.data.term, null, listSearchResults);
     }
 
+    /**
+     * Load and open the search page
+     * @param  {string} term Search term
+     * @return {void}
+     */
     function loadSearchPage(term) {
         if (term) {
             if (pageNavigator.topPage.data.term) {
@@ -270,6 +385,10 @@ var spotslim = (function () {
         }
     }
 
+    /**
+     * Open a modal that asks for a search term.
+     * @return {void}
+     */
     function getSearchTerm() {
         ons.notification.prompt({
             message: 'Album name',
@@ -279,6 +398,10 @@ var spotslim = (function () {
         });
     }
 
+    /**
+     * Initialize the app.
+     * @return {void}
+     */
     function init() {
         pageNavigator = document.getElementById('navigator');
         playerBar.title = document.getElementById('player-title');
@@ -295,6 +418,11 @@ var spotslim = (function () {
         document.getElementById('search').addEventListener('click', getSearchTerm, false);
     }
 
+    /**
+     * Function called when the app is opened from a spotslim:// URL.
+     * @param  {string} url URL from which the app was opened.
+     * @return {void}
+     */
     function customSchemeHandler(url) {
         token = simpleQueryString.parse(url.replace('spotslim://#', '')).access_token;
         initPlayer();
@@ -308,7 +436,6 @@ var spotslim = (function () {
 }());
 
 window.onSpotifyWebPlaybackSDKReady = spotslim.initPlayer;
-
 if (typeof ons === 'object') {
     ons.ready(spotslim.init);
 } else {
