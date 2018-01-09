@@ -68,7 +68,22 @@ var spotslim = (function () {
             return;
         }
         if (!token) {
-            token = simpleQueryString.parse(window.location.hash).access_token;
+            var hash = simpleQueryString.parse(window.location.hash);
+            if (hash.access_token) {
+                token = hash.access_token;
+                localStorage.setItem(
+                    'spotify_token',
+                    JSON.stringify({
+                        token: hash.access_token,
+                        expires: new Date(Date.now() + (hash.expires_in * 1000))
+                    })
+                );
+            } else {
+                var storageItem = JSON.parse(localStorage.getItem('spotify_token'));
+                if (storageItem.token && (new Date() < new Date(storageItem.expires))) {
+                    token = storageItem.token;
+                }
+            }
         }
         if (token) {
             if (callback) {
