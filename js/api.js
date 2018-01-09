@@ -1,5 +1,5 @@
 /*jslint browser: true, node: true*/
-/*global cordova, window*/
+/*global cordova, window, localStorage*/
 
 var SpotifyWebApi = require('spotify-web-api-js'),
     simpleQueryString = require('simple-query-string');
