@@ -34,7 +34,7 @@ var spotslim = (function () {
 
     /**
      * Redirect the user to a Spotify page that asks for a new token.
-     * @return {void}
+     * @return {Void}
      */
     function askToken() {
         var redirectUri;
@@ -50,7 +50,7 @@ var spotslim = (function () {
      * Display an authentication error.
      * @param  {Object} error         Error object
      * @param  {string} error.message Error message
-     * @return {void}
+     * @return {Void}
      */
     function authError(error) {
         ons.notification.confirm({
@@ -65,7 +65,7 @@ var spotslim = (function () {
      * Display a playback error.
      * @param  {Object} error         Error object
      * @param  {string} error.message Error message
-     * @return {void}
+     * @return {Void}
      */
     function playbackError(error) {
         ons.notification.alert({
@@ -77,7 +77,7 @@ var spotslim = (function () {
 
     /**
      * Check if a token is available in the URL or in the local storage.
-     * @return {void}
+     * @return {Void}
      */
     function findToken() {
         var hash = simpleQueryString.parse(window.location.hash);
@@ -125,7 +125,7 @@ var spotslim = (function () {
 
     /**
      * Resume playback.
-     * @return {void}
+     * @return {Void}
      */
     function resume() {
         player.resume();
@@ -133,7 +133,7 @@ var spotslim = (function () {
 
     /**
      * Go to the next track in the album.
-     * @return {void}
+     * @return {Void}
      */
     function nextTrack() {
         player.nextTrack().then(resume);
@@ -141,7 +141,7 @@ var spotslim = (function () {
 
     /**
      * Go to the previous track in the album.
-     * @return {void}
+     * @return {Void}
      */
     function previousTrack() {
         player.previousTrack().then(resume);
@@ -149,7 +149,7 @@ var spotslim = (function () {
 
     /**
      * Resume/pause playback.
-     * @return {void}
+     * @return {Void}
      */
     function togglePlay() {
         player.togglePlay();
@@ -159,7 +159,7 @@ var spotslim = (function () {
      * Start a new track.
      *
      * @param  {MouseEvent} e Event that triggered the function
-     * @return {void}
+     * @return {Void}
      * @see https://github.com/spotify/web-playback-sdk/issues/5
      */
     function playTrack(e) {
@@ -219,7 +219,7 @@ var spotslim = (function () {
      * List albums returned by the Spotify API.
      * @param  {Object} error Error object
      * @param  {Object} data  Data returned by the Spotify API
-     * @return {void}
+     * @return {Void}
      * @see https://developer.spotify.com/web-api/check-users-saved-albums/
      */
     function listAlbums(error, data) {
@@ -233,7 +233,7 @@ var spotslim = (function () {
      * List search results returned by the Spotify API.
      * @param  {Object} error Error object
      * @param  {Object} data  Data returned by the Spotify API
-     * @return {void}
+     * @return {Void}
      * @see https://developer.spotify.com/web-api/search-item/
      */
     function listSearchResults(error, data) {
@@ -245,7 +245,7 @@ var spotslim = (function () {
     /**
      * Load more albums.
      * @param  {Function} callback Function to call when data is returned by the API
-     * @return {void}
+     * @return {Void}
      */
     function loadMoreAlbums(callback) {
         infinityScrollCallback = callback;
@@ -255,7 +255,7 @@ var spotslim = (function () {
     /**
      * Function called when the home page is ready.
      * @param  {Element} page ons-page element
-     * @return {void}
+     * @return {Void}
      */
     function initHomePage(page) {
         page.onInfiniteScroll = loadMoreAlbums;
@@ -267,7 +267,7 @@ var spotslim = (function () {
      * Function called when the playback SDK is ready so we can initialize the API.
      * @param  {Object} device           Current Spotify device
      * @param  {string} device.device_id Device ID
-     * @return {void}
+     * @return {Void}
      */
     function initApi(device) {
         myDevice = device;
@@ -278,7 +278,7 @@ var spotslim = (function () {
     /**
      * Function called when an event is triggered by the music controls plugin.
      * @param  {string} action JSON string containing info about the event
-     * @return {void}
+     * @return {Void}
      * @see https://github.com/homerours/cordova-music-controls-plugin/blob/master/README.md
      */
     function musicControlsEvents(action) {
@@ -305,7 +305,7 @@ var spotslim = (function () {
     /**
      * Upate info about the current track played by the player.
      * @param  {Object} playbackState Object returned by the playback SDK
-     * @return {void}
+     * @return {Void}
      * @see https://beta.developer.spotify.com/documentation/web-playback-sdk/reference/#event-player-state-changed
      */
     function updatePlayer(playbackState) {
@@ -340,7 +340,7 @@ var spotslim = (function () {
 
     /**
      * Initialize the playback SDK.
-     * @return {void}
+     * @return {Void}
      */
     function initPlayer() {
         player = new Spotify.Player({
@@ -361,7 +361,7 @@ var spotslim = (function () {
     /**
      * Start a new search
      * @param  {Element} page ons-page element
-     * @return {void}
+     * @return {Void}
      */
     function search(page) {
         document.getElementById('search-term').textContent = page.data.term;
@@ -372,7 +372,7 @@ var spotslim = (function () {
     /**
      * Load and open the search page
      * @param  {string} term Search term
-     * @return {void}
+     * @return {Void}
      */
     function loadSearchPage(term) {
         if (term) {
@@ -387,7 +387,7 @@ var spotslim = (function () {
 
     /**
      * Open a modal that asks for a search term.
-     * @return {void}
+     * @return {Void}
      */
     function getSearchTerm() {
         ons.notification.prompt({
@@ -400,7 +400,7 @@ var spotslim = (function () {
 
     /**
      * Initialize the app.
-     * @return {void}
+     * @return {Void}
      */
     function init() {
         pageNavigator = document.getElementById('navigator');
@@ -421,7 +421,7 @@ var spotslim = (function () {
     /**
      * Function called when the app is opened from a spotslim:// URL.
      * @param  {string} url URL from which the app was opened.
-     * @return {void}
+     * @return {Void}
      */
     function customSchemeHandler(url) {
         token = simpleQueryString.parse(url.replace('spotslim://#', '')).access_token;
