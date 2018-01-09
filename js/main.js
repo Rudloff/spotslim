@@ -1,5 +1,5 @@
 /*jslint browser: true, node: true*/
-/*global Spotify, window, cordova, MusicControls*/
+/*global Spotify, window, cordova, MusicControls, localStorage, navigator*/
 
 if (typeof window !== 'object') {
     throw 'SpotSlim must be used in a browser.';
