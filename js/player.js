@@ -10,6 +10,10 @@ var he = require('he'),
     controls = require('./controls.js'),
     api = require('./api.js');
 
+/**
+ * player module constructor.
+ * @return {Object} player module
+ */
 function spotslimPlayer() {
     'use strict';
 

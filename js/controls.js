@@ -1,5 +1,9 @@
 /*jslint browser: true*/
 
+/**
+ * controls module constructor.
+ * @return {Object} controls module
+ */
 function spotslimPlayerControls() {
     'use strict';
     var ui = {};

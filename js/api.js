@@ -4,6 +4,10 @@
 var SpotifyWebApi = require('spotify-web-api-js'),
     simpleQueryString = require('simple-query-string');
 
+/**
+ * api module constructor.
+ * @return {Object} api module
+ */
 function spotslimApi() {
     'use strict';
 

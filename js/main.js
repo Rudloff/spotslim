@@ -17,6 +17,10 @@ require('onsenui/css/onsenui-core.css');
 require('onsenui/css/onsen-css-components.css');
 require('onsenui/css/font_awesome/css/font-awesome.css');
 
+/**
+ * Main module constructor.
+ * @return {Object} Main module
+ */
 function spotslimMain() {
     'use strict';
 
