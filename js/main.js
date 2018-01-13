@@ -17,7 +17,7 @@ require('onsenui/css/onsenui-core.css');
 require('onsenui/css/onsen-css-components.css');
 require('onsenui/css/font_awesome/css/font-awesome.css');
 
-var spotslim = (function () {
+function spotslimMain() {
     'use strict';
 
     var curAlbums = [],
@@ -206,7 +206,9 @@ var spotslim = (function () {
         initPlayer: initPlayer,
         customSchemeHandler: customSchemeHandler
     };
-}());
+}
+
+var spotslim = spotslimMain();
 
 window.onSpotifyWebPlaybackSDKReady = spotslim.initPlayer;
 if (typeof ons === 'object') {

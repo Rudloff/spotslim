@@ -1,6 +1,6 @@
 /*jslint browser: true*/
 
-var spotslimPlayerControls = (function () {
+function spotslimPlayerControls() {
     'use strict';
     var ui = {};
 
@@ -26,6 +26,6 @@ var spotslimPlayerControls = (function () {
         ui: ui,
         init: init
     };
-}());
+}
 
-module.exports = spotslimPlayerControls;
+module.exports = spotslimPlayerControls();

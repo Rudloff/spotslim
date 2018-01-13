@@ -4,7 +4,7 @@
 var SpotifyWebApi = require('spotify-web-api-js'),
     simpleQueryString = require('simple-query-string');
 
-var spotslimApi = (function () {
+function spotslimApi() {
     'use strict';
 
     var appId = 'b7b9dd79c3fb44f2896a676b293e1e01',
@@ -157,6 +157,6 @@ var spotslimApi = (function () {
         setToken: setToken,
         setPlayer: setPlayer
     };
-}());
+}
 
-module.exports = spotslimApi;
+module.exports = spotslimApi();

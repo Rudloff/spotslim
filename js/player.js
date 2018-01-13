@@ -10,7 +10,7 @@ var he = require('he'),
     controls = require('./controls.js'),
     api = require('./api.js');
 
-var spotslimPlayer = (function () {
+function spotslimPlayer() {
     'use strict';
 
     var player;
@@ -170,6 +170,6 @@ var spotslimPlayer = (function () {
         togglePlay: togglePlay,
         authError: authError
     };
-}());
+}
 
-module.exports = spotslimPlayer;
+module.exports = spotslimPlayer();
