@@ -1,5 +1,6 @@
 {
   "name": "SpotSlim",
+  "short_name": "SpotSlim",
   "start_url": "./index.html",
   "description": "Open source Spotify client",
   "display": "standalone",
