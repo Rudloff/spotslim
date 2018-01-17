@@ -1,3 +1,7 @@
+<ifmodule mod_mime.c>
+    AddType font/woff2 .woff2
+</ifmodule>
+
 <ifmodule mod_expires.c>
     ExpiresActive On
     ExpiresByType application/javascript "access plus 1 week"
@@ -6,6 +10,7 @@
     ExpiresByType image/jpeg "access plus 1 week"
     ExpiresByType image/svg+xml "access plus 1 week"
     ExpiresByType font/truetype "access plus 1 week"
+    ExpiresByType font/woff2 "access plus 1 week"
 </ifmodule>
 
 <ifmodule mod_filter.c>
