@@ -19,7 +19,7 @@ yarn
 * You need a Spotify Premium account.
 * If you host the app yourself,
     you need to generate an app ID on the [Spotify Dashboard](https://beta.developer.spotify.com/dashboard/applications)
-    and set it in `js/main.js`.
+    and set it in `js/api.js`.
 
 ## Proprietary libs
 
