@@ -1,11 +1,13 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
     <head>
         <meta charset="UTF-8" />
         <title>SpotSlim</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="Open source Spotify client" />
-        <script src="https://sdk.scdn.co/spotify-player.js" integrity="sha384-UwTbKCiTSLp/f7P8UvsGKHf9clUlNeedjf4CARYd8qDKW3eAV7ePeYn9Uag6Yf2b" crossorigin="anonymous"></script>
-        <script src="dist/bundle.js"></script>
+        <script src="https://sdk.scdn.co/spotify-player.js" crossorigin="anonymous" async></script>
+        <script src="cordova.js" defer></script>
+        <script src="dist/bundle.js" defer></script>
         <link rel="manifest" href="manifest.json" />
         <link rel="icon" href="img/logo.svg" />
         <meta name="twitter:creator" content="@Tael67" />
@@ -26,6 +28,7 @@
                     </ons-toolbar-button>
                 </div>
             </ons-toolbar>
+            <noscript><div>This application requires JavaScript, sorry ¯\_(ツ)_/¯</div></noscript>
             <ons-navigator id="navigator"></ons-navigator>
             <ons-bottom-toolbar modifier="aligned">
                 <ons-progress-bar id="player-progress"></ons-progress-bar>

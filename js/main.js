@@ -1,117 +1,57 @@
 /*jslint browser: true, node: true*/
-/*global SpotifyWebApi, Spotify, window, ons, simpleQueryString*/
+/*global Spotify, window, cordova, MusicControls*/
 
 if (typeof window !== 'object') {
     throw 'SpotSlim must be used in a browser.';
 }
 
-var SpotifyWebApi = require('spotify-web-api-js'),
-    ons = require('onsenui'),
-    simpleQueryString = require('simple-query-string');
+var ons = require('onsenui'),
+    simpleQueryString = require('simple-query-string'),
+    he = require('he'),
+    player = require('./player.js'),
+    api = require('./api.js'),
+    controls = require('./controls.js');
 
 //CSS
 require('onsenui/css/onsenui-core.css');
 require('onsenui/css/onsen-css-components.css');
 require('onsenui/css/font_awesome/css/font-awesome.css');
 
-var spotslim = (function () {
+/**
+ * Main module constructor.
+ * @return {Object} Main module
+ */
+function spotslimMain() {
     'use strict';
-    if (typeof SpotifyWebApi !== 'function') {
-        throw 'spotify-web-api-js is not loaded.';
-    }
 
-    var appId = 'b7b9dd79c3fb44f2896a676b293e1e01',
-        spotify = new SpotifyWebApi(),
-        myDevice,
-        curAlbums = [],
+    var curAlbums = [],
         infinityScrollCallback,
         albumList,
-        player,
-        playerBar = {},
         pageNavigator;
 
-    function askToken(redirect) {
-        if (redirect) {
-            window.location = 'https://accounts.spotify.com/authorize/?client_id=' + appId + '&redirect_uri=' + window.location.origin + window.location.pathname + '&response_type=token&scope=streaming%20user-read-birthdate%20user-read-email%20user-read-private%20user-library-read';
-        }
-    }
-
-    function authError(error) {
-        ons.notification.confirm({
-            message: error.message,
-            title: 'Error',
-            buttonLabels: ['Cancel', 'Retry'],
-            callback: askToken
-        });
-    }
-
-    function playbackError(error) {
-        ons.notification.alert({
-            message: error.message,
-            title: 'Error',
-            cancelable: true
-        });
-    }
-
-    function getToken(callback) {
-        var token = simpleQueryString.parse(window.location.hash).access_token,
-            query = simpleQueryString.parse(window.location.search);
-        if (query.error && query.error === 'access_denied') {
-            authError({message: 'Spotify access denied.'});
-            return;
-        }
-        if (token) {
-            if (callback) {
-                callback(token);
-            }
-            return token;
-        }
-        askToken(true);
-
-        return undefined;
-    }
-
-    function resume() {
-        player.resume();
-    }
-
-    function nextTrack() {
-        player.nextTrack().then(resume);
-    }
-
-    function previousTrack() {
-        player.previousTrack().then(resume);
-    }
-
-    function togglePlay() {
-        player.togglePlay();
-    }
-
-    function playTrack(e) {
-        spotify.play(
-            {
-                context_uri: e.currentTarget.dataset.uri,
-                device_id: myDevice.device_id
-            }
-        );
-        /**
-         * We need this hack because on Android Chrome playback has to be triggered by a click event
-         * @see https://github.com/spotify/web-playback-sdk/issues/5
-         */
-        setTimeout(resume, 1000);
-    }
-
+    /**
+     * Get a list item containing info about an album.
+     * @param  {Object} album Album object returned by the Spotify API
+     * @return {Element} ons-list-item element
+     */
     function getAlbumListItem(album) {
         var listItem = ons.createElement(
             '<ons-list-item tappable data-uri="' + album.uri + '">' +
                 '<div class="left"><img class="list-item__thumbnail" src="' + album.images[2].url + '"></div>' +
-                '<div class="center"><span class="list-item__title">' + album.name + '</span><span class="list-item__subtitle">' + album.artists[0].name + '</div>' +
+                '<div class="center"><span class="list-item__title">' + he.encode(album.name) + '</span><span class="list-item__subtitle">' + he.encode(album.artists[0].name) + '</div>' +
             '</ons-list-item>'
         );
-        listItem.addEventListener('click', playTrack, false);
+        listItem.addEventListener('click', api.playTrack, false);
         return listItem;
     }
 
+    /**
+     * Add a list item to the album list.
+     * @param {Object} item  Spotify API object
+     * @param {number} i     Index of the item
+     * @param {Array}  array List of Spotify objects
+     * @returns {void}
+     */
     function addAlbumItem(item, i, array) {
         var listItem = getAlbumListItem(item.album);
         albumList.appendChild(listItem);
@@ -121,11 +61,22 @@ var spotslim = (function () {
         }
     }
 
+    /**
+     * Add a list item to the search results.
+     * @param {Object} item Spotify API object
+     */
     function addSearchResultItem(item) {
         var listItem = getAlbumListItem(item);
         document.getElementById('search-album-list').appendChild(listItem);
     }
 
+    /**
+     * List albums returned by the Spotify API.
+     * @param  {Object} error Error object
+     * @param  {Object} data  Data returned by the Spotify API
+     * @return {Void}
+     * @see https://developer.spotify.com/web-api/check-users-saved-albums/
+     */
     function listAlbums(error, data) {
         if (!error) {
             curAlbums = curAlbums.concat(data.items);
@@ -133,71 +84,83 @@ var spotslim = (function () {
         }
     }
 
+    /**
+     * List search results returned by the Spotify API.
+     * @param  {Object} error Error object
+     * @param  {Object} data  Data returned by the Spotify API
+     * @return {Void}
+     * @see https://developer.spotify.com/web-api/search-item/
+     */
     function listSearchResults(error, data) {
-        document.getElementById('search-album-list').textContent = '';
         if (!error) {
             data.albums.items.forEach(addSearchResultItem);
         }
     }
 
+    /**
+     * Load more albums.
+     * @param  {Function} callback Function to call when data is returned by the API
+     * @return {Void}
+     */
     function loadMoreAlbums(callback) {
         infinityScrollCallback = callback;
-        spotify.getMySavedAlbums({offset: curAlbums.length}, listAlbums);
+        api.getAlbums(curAlbums.length, listAlbums);
     }
 
+    /**
+     * Function called when the home page is ready.
+     * @param  {Element} page ons-page element
+     * @return {Void}
+     */
     function initHomePage(page) {
         page.onInfiniteScroll = loadMoreAlbums;
         albumList = document.getElementById('album-list');
-        spotify.getMySavedAlbums(null, listAlbums);
+        api.getAlbums(null, listAlbums);
     }
 
-    function initApi(device) {
-        myDevice = device;
-        spotify.setAccessToken(getToken());
+    /**
+     * Load the home page template
+     * @return {Void}
+     */
+    function loadHomePage() {
         pageNavigator.replacePage('templates/home.html', {callback: initHomePage});
     }
 
-    function updatePlayer(playbackState) {
-        if (playbackState) {
-            playerBar.title.innerHTML = playbackState.track_window.current_track.name + '<br/>' + playbackState.track_window.current_track.artists[0].name;
-            playerBar.progress.value = (playbackState.position / playbackState.duration) * 100;
-            playerBar.previous.disabled = false;
-            playerBar.next.disabled = false;
-            playerBar.toggle.disabled = false;
-            if (playbackState.paused) {
-                playerBar.toggle.icon.setAttribute('icon', 'fa-play');
-            } else {
-                playerBar.toggle.icon.setAttribute('icon', 'fa-pause');
-            }
-        }
+    /**
+     * Initialize the Spotify API.
+     * @param  {Object}   device           Current Spotify device
+     * @param  {string}   device.device_id Device ID
+     * @return {Void}
+     */
+    function initApi(device) {
+        api.setPlayer(player);
+        api.init(device, loadHomePage);
     }
 
+    /**
+     * Initialize the playback SDK.
+     * @return {Void}
+     */
     function initPlayer() {
-        player = new Spotify.Player({
-            name: 'SpotSlim',
-            getOAuthToken: getToken
-        });
-
-        player.on('ready', initApi);
-        player.on('player_state_changed', updatePlayer);
-        player.on('authentication_error', authError);
-        player.on('account_error', authError);
-        player.on('initialization_error', authError);
-        player.on('playback_error', playbackError);
-
-        player.connect();
-
-        playerBar.next.addEventListener('click', nextTrack, false);
-        playerBar.previous.addEventListener('click', previousTrack, false);
-        playerBar.toggle.addEventListener('click', togglePlay, false);
+        player.init(api.getToken, initApi);
     }
 
-
+    /**
+     * Start a new search
+     * @param  {Element} page ons-page element
+     * @return {Void}
+     */
     function search(page) {
         document.getElementById('search-term').textContent = page.data.term;
-        spotify.searchAlbums(page.data.term, null, listSearchResults);
+        document.getElementById('search-album-list').textContent = '';
+        api.search(page.data.term, listSearchResults);
     }
 
+    /**
+     * Load and open the search page
+     * @param  {string} term Search term
+     * @return {Void}
+     */
     function loadSearchPage(term) {
         if (term) {
             if (pageNavigator.topPage.data.term) {
@@ -209,6 +172,10 @@ var spotslim = (function () {
         }
     }
 
+    /**
+     * Open a modal that asks for a search term.
+     * @return {Void}
+     */
     function getSearchTerm() {
         ons.notification.prompt({
             message: 'Album name',
@@ -218,27 +185,40 @@ var spotslim = (function () {
         });
     }
 
+    /**
+     * Initialize the app.
+     * @return {Void}
+     */
     function init() {
         pageNavigator = document.getElementById('navigator');
-        playerBar.title = document.getElementById('player-title');
-        playerBar.progress = document.getElementById('player-progress');
-        playerBar.next = document.getElementById('player-next');
-        playerBar.previous = document.getElementById('player-previous');
-        playerBar.toggle = document.getElementById('player-toggle');
-        playerBar.toggle.icon = document.getElementById('player-toggle-icon');
-
         document.getElementById('search').addEventListener('click', getSearchTerm, false);
+        controls.init(player);
+    }
 
-        window.onSpotifyWebPlaybackSDKReady = initPlayer;
+    /**
+     * Function called when the app is opened from a spotslim:// URL.
+     * @param  {string} url URL from which the app was opened.
+     * @return {Void}
+     */
+    function customSchemeHandler(url) {
+        api.setToken(simpleQueryString.parse(url.replace('spotslim://#', '')).access_token);
+        initPlayer();
     }
 
     return {
-        init: init
+        init: init,
+        initPlayer: initPlayer,
+        customSchemeHandler: customSchemeHandler
     };
-}());
+}
 
+var spotslim = spotslimMain();
+
+window.onSpotifyWebPlaybackSDKReady = spotslim.initPlayer;
 if (typeof ons === 'object') {
     ons.ready(spotslim.init);
 } else {
     throw 'Onsen is not loaded';
 }
+
+window.handleOpenURL = spotslim.customSchemeHandler;
