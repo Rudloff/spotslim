@@ -124,10 +124,10 @@ function spotslimPlayer() {
             controls.ui.toggle.disabled = false;
             if (playbackState.paused) {
                 isPlaying = false;
-                controls.ui.toggle.icon.setAttribute('icon', 'fa-play');
+                controls.ui.toggle.setAttribute('icon', 'fa-play');
             } else {
                 isPlaying = true;
-                controls.ui.toggle.icon.setAttribute('icon', 'fa-pause');
+                controls.ui.toggle.setAttribute('icon', 'fa-pause');
             }
 
             if (typeof MusicControls === 'object') {

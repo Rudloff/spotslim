@@ -19,7 +19,6 @@ function spotslimPlayerControls() {
         ui.next = document.getElementById('player-next');
         ui.previous = document.getElementById('player-previous');
         ui.toggle = document.getElementById('player-toggle');
-        ui.toggle.icon = document.getElementById('player-toggle-icon');
 
         ui.next.addEventListener('click', player.nextTrack, false);
         ui.previous.addEventListener('click', player.previousTrack, false);
