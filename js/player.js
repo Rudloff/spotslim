@@ -73,13 +73,23 @@ function spotslimPlayer() {
     }
 
     /**
+     * Only toggle playback if the player has a current state.
+     * @param  {Object} state Current state of the player
+     * @return {Void}
+     */
+    function doToggle(state) {
+        if (state) {
+            player.togglePlay();
+        }
+    }
+
+    /**
      * Resume/pause playback.
      * @return {Void}
      */
     function togglePlay() {
-        player.togglePlay();
+        player.getCurrentState().then(doToggle);
     }
-
 
     /**
      * Function called when an event is triggered by the music controls plugin.
