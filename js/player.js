@@ -74,7 +74,7 @@ function spotslimPlayer() {
 
     /**
      * Only toggle playback if the player has a current state.
-     * @param  {Object} state Current state of the player
+     * @param  {Object} playbackState State object returned by the playback SDK
      * @return {Void}
      */
     function doToggle(state) {
@@ -120,7 +120,7 @@ function spotslimPlayer() {
 
     /**
      * Upate info about the current track played by the player.
-     * @param  {Object} playbackState Object returned by the playback SDK
+     * @param  {Object} playbackState State object returned by the playback SDK
      * @return {Void}
      * @see https://beta.developer.spotify.com/documentation/web-playback-sdk/reference/#event-player-state-changed
      */
