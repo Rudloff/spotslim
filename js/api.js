@@ -157,6 +157,7 @@ function spotslimApi() {
         getAlbums: getAlbums,
         search: search,
         playTrack: playTrack,
+        askToken: askToken,
         getToken: getToken,
         setToken: setToken,
         setPlayer: setPlayer
