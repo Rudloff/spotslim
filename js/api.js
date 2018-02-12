@@ -18,34 +18,34 @@ function spotslimApi() {
         player;
 
     /**
+     * Set the current Spotify token
+     * @param {string} hash Hash in URL returned by Spotify login form
+     */
+    function setToken(hash) {
+        token = hash.access_token;
+        localStorage.setItem(
+            'spotify_token',
+            JSON.stringify({
+                token: hash.access_token,
+                expires: new Date(Date.now() + (hash.expires_in * 1000))
+            })
+        );
+    }
+
+    /**
      * Check if a token is available in the URL or in the local storage.
      * @return {Void}
      */
     function findToken() {
         var hash = simpleQueryString.parse(window.location.hash);
         if (hash.access_token) {
-            token = hash.access_token;
-            localStorage.setItem(
-                'spotify_token',
-                JSON.stringify({
-                    token: hash.access_token,
-                    expires: new Date(Date.now() + (hash.expires_in * 1000))
-                })
-            );
+            setToken(hash);
         } else {
             var storageItem = JSON.parse(localStorage.getItem('spotify_token'));
             if (storageItem && storageItem.token && (new Date() < new Date(storageItem.expires))) {
                 token = storageItem.token;
             }
         }
-    }
-
-    /**
-     * Set the current Spotify token
-     * @param {string} newToken New token
-     */
-    function setToken(newToken) {
-        token = newToken;
     }
 
     /**
@@ -157,6 +157,7 @@ function spotslimApi() {
         getAlbums: getAlbums,
         search: search,
         playTrack: playTrack,
+        askToken: askToken,
         getToken: getToken,
         setToken: setToken,
         setPlayer: setPlayer

@@ -73,13 +73,23 @@ function spotslimPlayer() {
     }
 
     /**
+     * Only toggle playback if the player has a current state.
+     * @param  {Object} playbackState State object returned by the playback SDK
+     * @return {Void}
+     */
+    function doToggle(state) {
+        if (state) {
+            player.togglePlay();
+        }
+    }
+
+    /**
      * Resume/pause playback.
      * @return {Void}
      */
     function togglePlay() {
-        player.togglePlay();
+        player.getCurrentState().then(doToggle);
     }
-
 
     /**
      * Function called when an event is triggered by the music controls plugin.
@@ -110,7 +120,7 @@ function spotslimPlayer() {
 
     /**
      * Upate info about the current track played by the player.
-     * @param  {Object} playbackState Object returned by the playback SDK
+     * @param  {Object} playbackState State object returned by the playback SDK
      * @return {Void}
      * @see https://beta.developer.spotify.com/documentation/web-playback-sdk/reference/#event-player-state-changed
      */
@@ -124,10 +134,10 @@ function spotslimPlayer() {
             controls.ui.toggle.disabled = false;
             if (playbackState.paused) {
                 isPlaying = false;
-                controls.ui.toggle.icon.setAttribute('icon', 'fa-play');
+                controls.ui.toggle.setAttribute('icon', 'fa-play');
             } else {
                 isPlaying = true;
-                controls.ui.toggle.icon.setAttribute('icon', 'fa-pause');
+                controls.ui.toggle.setAttribute('icon', 'fa-pause');
             }
 
             if (typeof MusicControls === 'object') {
