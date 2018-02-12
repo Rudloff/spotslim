@@ -201,7 +201,7 @@ function spotslimMain() {
      * @return {Void}
      */
     function customSchemeHandler(url) {
-        api.setToken(simpleQueryString.parse(url.replace('spotslim://#', '')).access_token);
+        api.setToken(simpleQueryString.parse(url.replace('spotslim://#', '')));
         initPlayer();
     }
 
