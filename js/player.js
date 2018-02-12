@@ -77,8 +77,8 @@ function spotslimPlayer() {
      * @param  {Object} playbackState State object returned by the playback SDK
      * @return {Void}
      */
-    function doToggle(state) {
-        if (state) {
+    function doToggle(playbackState) {
+        if (playbackState) {
             player.togglePlay();
         }
     }
