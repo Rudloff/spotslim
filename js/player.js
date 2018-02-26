@@ -100,13 +100,17 @@ function spotslimPlayer() {
     function musicControlsEvents(action) {
         switch (JSON.parse(action).message) {
         case 'music-controls-next':
+        case 'music-controls-media-button-next':
             nextTrack();
             break;
         case 'music-controls-previous':
+        case 'music-controls-media-button-previous':
             previousTrack();
             break;
         case 'music-controls-play':
         case 'music-controls-pause':
+        case 'music-controls-media-button-play':
+        case 'music-controls-media-button-pause':
         case 'music-controls-media-button-headset-hook':
             togglePlay();
             break;
