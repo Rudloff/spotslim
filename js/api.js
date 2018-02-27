@@ -76,9 +76,20 @@ function spotslimApi() {
      * @param  {string}   term     Search term
      * @param  {Function} callback Function to call when the API call is complete
      * @return {Void}
+     * @see https://developer.spotify.com/web-api/search-item/
      */
     function search(term, callback) {
         spotify.searchAlbums(term, null, callback);
+    }
+
+    /**
+     * Get the user's playlists
+     * @param  {Function} callback Function to call when the API call is complete
+     * @return {Void}
+     * @see https://developer.spotify.com/web-api/get-a-list-of-current-users-playlists/
+     */
+    function getPlaylists(callback) {
+        spotify.getUserPlaylists(null, callback);
     }
 
     /**
@@ -111,7 +122,7 @@ function spotslimApi() {
         } else {
             redirectUri = window.location.origin + window.location.pathname;
         }
-        window.location = 'https://accounts.spotify.com/authorize/?client_id=' + appId + '&redirect_uri=' + redirectUri + '&response_type=token&scope=streaming%20user-read-birthdate%20user-read-email%20user-read-private%20user-library-read';
+        window.location = 'https://accounts.spotify.com/authorize/?client_id=' + appId + '&redirect_uri=' + redirectUri + '&response_type=token&scope=streaming%20user-read-birthdate%20user-read-email%20user-read-private%20user-library-read%20playlist-read-private';
     }
 
     /**
@@ -156,6 +167,7 @@ function spotslimApi() {
         init: init,
         getAlbums: getAlbums,
         search: search,
+        getPlaylists: getPlaylists,
         playTrack: playTrack,
         askToken: askToken,
         getToken: getToken,

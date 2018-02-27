@@ -30,17 +30,27 @@ function spotslimMain() {
         pageNavigator;
 
     /**
-     * Get a list item containing info about an album.
-     * @param  {Object} album Album object returned by the Spotify API
+     * Get a list item containing info about an album or playlist.
+     * @param  {Object} object Album or playlist object returned by the Spotify API
      * @return {Element} ons-list-item element
      */
-    function getAlbumListItem(album) {
-        var listItem = ons.createElement(
-            '<ons-list-item tappable data-uri="' + album.uri + '">' +
-                '<div class="left"><img alt="' + he.encode(album.name) + ' cover" class="list-item__thumbnail" src="' + album.images[2].url + '"></div>' +
-                '<div class="center"><span class="list-item__title">' + he.encode(album.name) + '</span><span class="list-item__subtitle">' + he.encode(album.artists[0].name) + '</div>' +
-            '</ons-list-item>'
-        );
+    function getListItem(object) {
+        var image, artist;
+        if (object.images[2]) {
+            image = object.images[2];
+        } else {
+            image = object.images[0];
+        }
+        if (object.artists) {
+            artist = object.artists[0].name;
+        } else {
+            artist = object.owner.id;
+        }
+        var html = '<ons-list-item tappable data-uri="' + object.uri + '">' +
+                '<div class="left"><img alt="' + he.encode(object.name) + ' cover" class="list-item__thumbnail" src="' + image.url + '"></div>' +
+                '<div class="center"><span class="list-item__title">' + he.encode(object.name) + '</span><span class="list-item__subtitle">' + he.encode(artist) + '</span></div>' +
+                '</ons-list-item>';
+        var listItem = ons.createElement(html);
         listItem.addEventListener('click', api.playTrack, false);
         return listItem;
     }
@@ -53,7 +63,7 @@ function spotslimMain() {
      * @returns {void}
      */
     function addAlbumItem(item, i, array) {
-        var listItem = getAlbumListItem(item.album);
+        var listItem = getListItem(item.album);
         albumList.appendChild(listItem);
         if (infinityScrollCallback && i === array.length - 1) {
             infinityScrollCallback();
@@ -66,8 +76,17 @@ function spotslimMain() {
      * @param {Object} item Spotify API object
      */
     function addSearchResultItem(item) {
-        var listItem = getAlbumListItem(item);
+        var listItem = getListItem(item);
         document.getElementById('search-album-list').appendChild(listItem);
+    }
+
+    /**
+     * Add a list item to the playlists
+     * @param {Object} item Spotify API object
+     */
+    function addPlaylistItem(item) {
+        var listItem = getListItem(item);
+        document.getElementById('playlist-list').appendChild(listItem);
     }
 
     /**
@@ -94,6 +113,19 @@ function spotslimMain() {
     function listSearchResults(error, data) {
         if (!error) {
             data.albums.items.forEach(addSearchResultItem);
+        }
+    }
+
+    /**
+     * List playlists returned by the Spotify API.
+     * @param  {Object} error Error object
+     * @param  {Object} data  Data returned by the Spotify API
+     * @return {Void}
+     * @see https://developer.spotify.com/web-api/get-a-list-of-current-users-playlists/
+     */
+    function listPlaylists(error, data) {
+        if (!error) {
+            data.items.forEach(addPlaylistItem);
         }
     }
 
@@ -151,9 +183,25 @@ function spotslimMain() {
      * @return {Void}
      */
     function search(page) {
-        document.getElementById('search-term').textContent = page.data.term;
-        document.getElementById('search-album-list').textContent = '';
-        api.search(page.data.term, listSearchResults);
+        var list = document.getElementById('search-album-list');
+        // We need this check because for some reason this event is also triggered when we close the page.
+        if (list) {
+            document.getElementById('search-term').textContent = page.data.term;
+            albumList.textContent = '';
+            api.search(page.data.term, listSearchResults);
+        }
+    }
+
+    /**
+     * Display the user's playlists
+     * @return {Void}
+     */
+    function showPlaylists() {
+        var list = document.getElementById('playlist-list');
+        // We need this check because for some reason this event is also triggered when we close the page.
+        if (list) {
+            api.getPlaylists(listPlaylists);
+        }
     }
 
     /**
@@ -186,12 +234,21 @@ function spotslimMain() {
     }
 
     /**
+     * Load the playlists page
+     * @return {Void}
+     */
+    function getPlaylists() {
+        pageNavigator.bringPageTop('templates/playlists.html', {callback: showPlaylists});
+    }
+
+    /**
      * Initialize the app.
      * @return {Void}
      */
     function init() {
         pageNavigator = document.getElementById('navigator');
         document.getElementById('search').addEventListener('click', getSearchTerm, false);
+        document.getElementById('playlists').addEventListener('click', getPlaylists, false);
         controls.init(player);
     }
 
