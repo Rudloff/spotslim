@@ -1,4 +1,4 @@
-/*jslint browser: true*/
+/*jslint browser: true, node: true*/
 
 /**
  * controls module constructor.
