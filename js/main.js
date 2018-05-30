@@ -5,6 +5,10 @@ if (typeof window !== 'object') {
     throw 'SpotSlim must be used in a browser.';
 }
 
+// Check old browsers
+var oldbrowsers = require('./oldbrowser.js');
+oldbrowsers.init();
+
 var ons = require('onsenui'),
     simpleQueryString = require('simple-query-string'),
     he = require('he'),
