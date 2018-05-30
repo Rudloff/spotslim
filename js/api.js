@@ -107,7 +107,7 @@ function spotslimApi() {
             }
         );
 
-        //We need this hack because on Android Chrome playback has to be triggered by a click event.
+        // We need this hack because on Android Chrome playback has to be triggered by a click event.
         setTimeout(player.resume, 1000);
     }
 

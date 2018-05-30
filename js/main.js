@@ -16,7 +16,7 @@ var ons = require('onsenui'),
     api = require('./api.js'),
     controls = require('./controls.js');
 
-//CSS
+// CSS
 require('onsenui/css/onsenui-core.css');
 require('onsenui/css/onsen-css-components.css');
 require('onsenui/css/font_awesome/css/font-awesome.css');
