@@ -22,7 +22,7 @@
     "grunt-jslint": "~1.1.15",
     "grunt-jsonlint": "~1.1.0",
     "grunt-webpack": "~3.1.2",
-    "markdownlint-cli": "~0.8.2"
+    "markdownlint-cli": "~0.10.0"
   },
   "homepage": "https://github.com/Rudloff/spotslim",
   "keywords": [
