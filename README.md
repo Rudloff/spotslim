@@ -25,3 +25,9 @@ yarn
 
 Unfortunately, we have to use the `spotify-player.js` library which is not open source.
 All the code in this repository is free though.
+
+## "Failed to initialize player" error
+
+If you get this error, it probably means that your browser can't play DRM content.
+If you are using Firefox or Chrome,
+you need [Widevine](https://www.widevine.com/) to be installed and enabled.
